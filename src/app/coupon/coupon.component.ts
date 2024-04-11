@@ -2,7 +2,6 @@ import {Component, ElementRef, ViewChild} from '@angular/core';
 import {DeviceUUID} from "device-uuid";
 import {Code} from "../models/Code";
 import {CodeGeneratorService} from "../service/code-generator.service";
-import {PdfService} from "../service/pdf-service.service";
 import html2canvas from 'html2canvas';
 
 @Component({
@@ -18,11 +17,10 @@ export class CouponComponent {
 
   deviceIdentifier: string = "";
 
-  constructor(private service: CodeGeneratorService, private pdfService: PdfService) {
+  constructor(private service: CodeGeneratorService) {
 
     this.service.saveCode(this.code).subscribe(
       (savedCode: Code) => {
-        console.log('codice salvato:', savedCode);
         this.deviceIdentifier = savedCode.couponCode;
       });
 

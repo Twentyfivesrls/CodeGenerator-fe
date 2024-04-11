@@ -7,7 +7,7 @@ import {Code} from "../models/Code";
   providedIn: 'root'
 })
 export class CodeGeneratorService {
-  private apiUrl = 'http://localhost:8080/code/save';
+  private apiUrl = 'http://80.211.123.141:8103/CodeGenerator-be/code/save';
 
   constructor(private http: HttpClient) { }
 
