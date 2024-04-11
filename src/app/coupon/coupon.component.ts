@@ -1,15 +1,18 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, ViewChild} from '@angular/core';
 import {DeviceUUID} from "device-uuid";
 import {Code} from "../models/Code";
 import {CodeGeneratorService} from "../service/code-generator.service";
 import {PdfService} from "../service/pdf-service.service";
+import html2canvas from 'html2canvas';
 
 @Component({
   selector: 'app-coupon',
   templateUrl: './coupon.component.html',
-  styleUrl: './coupon.component.css'
+  styleUrl: './coupon.component.scss'
 })
 export class CouponComponent {
+
+  @ViewChild('contentToDownload') contentToDownload!: ElementRef;
 
   code: Code = {deviceId:new DeviceUUID().get(), couponCode:""};
 
@@ -25,12 +28,29 @@ export class CouponComponent {
 
   }
 
-  generatePdf() {
 
-    const imageUrl = 'assets/riff.jpg';
-    const text = "Riscatta il codice per una bevuta gratuita : " + this.deviceIdentifier;
+  downloadContentAsImage() {
+    this.generateImageFile(this.contentToDownload.nativeElement).then((dataUrl: any) => {
+      const filename = `coupon_code.png`;
+      this.downloadImage(dataUrl, filename);
+    });
+  }
 
-    this.pdfService.generatePdf(imageUrl, text);
+  generateImageFile(element: any) {
+    return html2canvas(element, {
+      useCORS: true, // Needed to download images from a different domain
+    }).then(canvas => {
+      return canvas.toDataURL('image/png'); // Convert canvas to data URL
+    });
+  }
+
+  downloadImage(dataUrl: any, filename: any) {
+    const link = document.createElement('a');
+    link.href = dataUrl;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   }
 
 }
